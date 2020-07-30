@@ -1,11 +1,15 @@
 from flask import Blueprint, request, jsonify
 
-import mongo_helper
+from mongo_helper import MongoHelper
 
 main = Blueprint('main', __name__)
 
 
+mongo_helper = MongoHelper()
+
+
 def init_app(app):
+    mongo_helper.init_app(app)
     app.register_blueprint(main)
 
 

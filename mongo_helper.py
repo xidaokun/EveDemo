@@ -6,6 +6,13 @@ from server_response import response_err, response_ok
 
 
 class MongoHelper:
+
+    def __init__(self, app=None):
+        self.app = app
+
+    def init_app(self, app):
+        self.app = app
+
     def create_collection(self):
         content = request.get_json(force=True, silent=True)
         if content is None:
