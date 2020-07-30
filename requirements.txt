@@ -1,0 +1,5 @@
+pymongo
+eve
+Flask
+Flask-Script
+Flask-APScheduler
