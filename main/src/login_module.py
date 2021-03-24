@@ -23,7 +23,7 @@ class LoginModule:
         try:
             save_info_to_db(name, password)
         except Exception as e:
-            print("Exception in did_register::", e)
+            print("Exception in register::", e)
 
         return response_ok()
 
