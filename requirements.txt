@@ -1,5 +1,8 @@
 pymongo
-eve
 Flask
 Flask-Script
 Flask-APScheduler
+eve
+cffi
+setuptools
+base58
