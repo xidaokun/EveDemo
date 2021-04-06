@@ -8,3 +8,7 @@ ID_INFO_REGISTER_COL = "users"
 
 ID_INFO_REGISTER_PASSWORD = "password"
 ID_INFO_REGISTER_TOKEN = "token"
+
+MODE_DEV = "dev"
+MODE_PROD = "prod"
+MODE_TEST = "test"

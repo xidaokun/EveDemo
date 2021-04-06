@@ -1,3 +1,5 @@
+import logging
+
 from flask import Blueprint, request, jsonify
 
 from main.src.database_module import DatabaseModule
@@ -33,3 +35,26 @@ def login():
     return login_module.login()
 
 
+@main.route('/api/v1/file/upload/<path:file_name>', methods=['POST'])
+def upload_file(file_name):
+    return files_module.upload_file(file_name)
+
+
+@main.route('/api/v1/file/download', methods=['GET'])
+def download_file():
+    return files_module.download_file()
+
+
+@main.route('/api/v1/file/list', methods=['GET'])
+def list_files():
+    return files_module.list_files()
+
+
+@main.route('/api/v1/file/information', methods=['GET'])
+def get_file_information():
+    return files_module.get_file_info()
+
+
+@main.route('/api/v1/file/delete', methods=['POST'])
+def delete_file():
+    return files_module.delete_file()

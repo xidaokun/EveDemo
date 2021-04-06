@@ -1,21 +1,16 @@
-from eve.auth import TokenAuth
+import logging
+
 from flask import request
 
 from main.src.info_cache import *
 
 
-class BackendAuth(TokenAuth):
-    def check_auth(self, token, allowed_roles, resource, method):
-        info = get_info_by_token(token)
-        if info is not None:
-            return True
-        else:
-            return False
+def get_id_by_token():
+    auth = request.headers.get("Authorization")
+    if auth is None:
+        return None
 
-
-def get_auth_token():
-    auth = request.headers.get("Authorization").strip()
-    if auth.lower().startswith("token", "bearer"):
+    if auth.strip().lower().startswith(("token", "bearer")):
         token = auth.split(" ")[1]
         info = get_info_by_token(token)
         if info is not None:
