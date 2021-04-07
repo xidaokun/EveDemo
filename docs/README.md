@@ -1,9 +1,9 @@
 Plan to design a general storage system that does not include specific scenario requirement logic. This part of the content can be implemented in client or middleware; this system should have modules: 
-* 1. Registration/Login/OAuth authorization 
+* 1.Registration/Login/OAuth authorization 
 * 2.file, database Storage 
-* 3. DCL permission control 
-* 4. Paid mode 
-* 5. Can be backed up to mainstream cloud disks such as google drive or one drive through Rclone
+* 3.DCL permission control 
+* 4.Paid mode 
+* 5.Can be backed up to mainstream cloud disks such as google drive or one drive through Rclone
 
 
 ## Run
