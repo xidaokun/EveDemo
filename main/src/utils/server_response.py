@@ -7,6 +7,7 @@ STATUS = "_status"
 STATUS_OK = "OK"
 STATUS_ERR = "ERR"
 
+
 class ServerResponse:
     def __init__(self, logger_name="Backend"):
         self.logger = logging.getLogger(logger_name)

@@ -1,5 +1,3 @@
-import logging
-
 from flask import request
 
 from main.src.info_cache import *
