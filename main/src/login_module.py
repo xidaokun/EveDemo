@@ -1,11 +1,14 @@
+import requests
 from flask import request
 
 from main.src.info_cache import *
+from main.src.utils.server_response import ServerResponse
 
 
 class LoginModule:
     def __init__(self, app=None):
         self.app = app
+        self.response = ServerResponse("Login")
 
     def init_app(self, app):
         self.app = app
@@ -50,4 +53,15 @@ class LoginModule:
         data = {"token": token}
         return self.response.response_ok(data)
 
+    def oauth(self):
+        code = request.args.get('code')
+        auth_type = request.args.get('type')
+        redirect_uri = request.args.get('redirect_uri')
+        state = request.args.get('state')
+        if (code is None) or (auth_type is None):
+            return self.response.response_err(400, "parameter is null")
 
+        url, auth_params = oauth_settings(auth_type, code, redirect_uri, state)
+        ret = requests.get(url, headers={'accept': 'application/json'}, params=auth_params).text
+
+        return self.response.response_ok(ret)

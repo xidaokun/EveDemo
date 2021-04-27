@@ -1,14 +1,14 @@
-import logging
+
 
 from flask import Blueprint, request, jsonify
 
-from main.src.database_module import DatabaseModule
+from main.src.db_module import DbModule
 from main.src.files_module import FilesModule
 from main.src.login_module import LoginModule
 
 login_module = LoginModule()
 files_module = FilesModule()
-database_module = DatabaseModule()
+database_module = DbModule()
 main = Blueprint('main', __name__)
 
 
@@ -33,6 +33,11 @@ def register():
 @main.route('/api/v1/login', methods=['POST'])
 def login():
     return login_module.login()
+
+
+@main.route('/api/v1/oauth', methods=['GET'])
+def oauth():
+    return login_module.oauth()
 
 
 @main.route('/api/v1/file/upload/<path:file_name>', methods=['POST'])
