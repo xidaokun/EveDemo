@@ -5,7 +5,7 @@ from flask import request
 from pymongo import MongoClient
 from pymongo.errors import CollectionInvalid
 
-from main.src.utils.auth import get_id_by_token
+from main.src.utils.auth import verify_request
 from main.src.utils.constants import MONGO_HOST, MONGO_PORT
 from main.src.utils.db_utils import gene_mongo_db_name, populate_options_insert_one, get_collection, query_insert_one, \
     options_filter, convert_oid, gene_sort, populate_options_find_many, query_find_many, populate_options_update_one, \
@@ -22,8 +22,8 @@ class DbModule:
         self.app = app
 
     def create_collection(self):
-        name = get_id_by_token()
-        if name is None:
+        isvalid, payload = verify_request()
+        if isvalid:
             return self.response.response_err(401, "token is invalid")
 
         content = request.get_json(force=True, silent=True)
@@ -34,7 +34,7 @@ class DbModule:
             return self.response.response_err(400, "parameter is null")
 
         connection = MongoClient(host=MONGO_HOST, port=MONGO_PORT)
-        db_name = gene_mongo_db_name(name)
+        db_name = gene_mongo_db_name(payload['name'])
         db = connection[db_name]
         try:
             db.create_collection(collection_name)
@@ -45,8 +45,8 @@ class DbModule:
         return self.response.response_ok()
 
     def delete_collection(self):
-        name = get_id_by_token()
-        if name is None:
+        isvalid, payload = verify_request()
+        if isvalid:
             return self.response.response_err(401, "token is invalid")
 
         content = request.get_json(force=True, silent=True)
@@ -57,7 +57,7 @@ class DbModule:
             return self.response.response_err(400, "parameter is null")
 
         connection = MongoClient(host=MONGO_HOST, port=MONGO_PORT)
-        db_name = gene_mongo_db_name(name)
+        db_name = gene_mongo_db_name(payload['name'])
         db = connection[db_name]
         try:
             db.drop_collection(collection_name)
@@ -69,15 +69,15 @@ class DbModule:
         return self.response.response_ok()
 
     def insert_one(self):
-        name = get_id_by_token()
-        if name is None:
+        isvalid, payload = verify_request()
+        if isvalid:
             return self.response.response_err(401, "token is invalid")
 
         content = request.get_json(force=True, silent=True)
 
         options = populate_options_insert_one(content)
 
-        col = get_collection(name, content["collection"])
+        col = get_collection(payload['name'], content["collection"])
         if not col:
             return self.response.response_err(404, "collection not exist")
 
@@ -88,13 +88,13 @@ class DbModule:
         return self.response.response_ok(data)
 
     def insert_many(self):
-        name = get_id_by_token()
-        if name is None:
+        isvalid, payload = verify_request()
+        if isvalid:
             return self.response.response_err(401, "token is invalid")
 
         content = request.get_json(force=True, silent=True)
 
-        col = get_collection(name, content["collection"])
+        col = get_collection(payload['name'], content["collection"])
         if not col:
             return self.response.response_err(404, "collection not exist")
 
@@ -117,12 +117,12 @@ class DbModule:
             return self.response.response_err(500, "Exception:" + str(e))
 
     def find_one(self):
-        name = get_id_by_token()
-        if name is None:
+        isvalid, payload = verify_request()
+        if isvalid:
             return self.response.response_err(401, "token is invalid")
 
         content = request.get_json(force=True, silent=True)
-        col = get_collection(name, content["collection"])
+        col = get_collection(payload['name'], content["collection"])
         if not col:
             return self.response.response_err(404, "collection not exist")
 
@@ -149,15 +149,15 @@ class DbModule:
             return self.response.response_err(500, "Exception:" + str(e))
 
     def find_many(self):
-        name = get_id_by_token()
-        if name is None:
+        isvalid, payload = verify_request()
+        if isvalid:
             return self.response.response_err(401, "token is invalid")
 
         content = request.get_json(force=True, silent=True)
 
         options = populate_options_find_many(content)
 
-        col = get_collection(name, content.get('collection'))
+        col = get_collection(payload['name'], content.get('collection'))
         if not col:
             return self.response.response_err(404, "collection not exist")
 
@@ -168,15 +168,15 @@ class DbModule:
         return self.response.response_ok(data)
 
     def update_one(self):
-        name = get_id_by_token()
-        if name is None:
+        isvalid, payload = verify_request()
+        if isvalid:
             return self.response.response_err(401, "token is invalid")
 
         content = request.get_json(force=True, silent=True)
 
         options = populate_options_update_one(content)
 
-        col = get_collection(name, content["collection"])
+        col = get_collection(payload['name'], content["collection"])
         if not col:
             return self.response.response_err(404, "collection not exist")
 
@@ -186,13 +186,13 @@ class DbModule:
         return self.response.response_ok(data)
 
     def update_many(self):
-        name = get_id_by_token()
-        if name is None:
+        isvalid, payload = verify_request()
+        if isvalid:
             return self.response.response_err(401, "token is invalid")
 
         content = request.get_json(force=True, silent=True)
 
-        col = get_collection(name, content["collection"])
+        col = get_collection(payload['name'], content["collection"])
         if not col:
             return self.response.response_err(404, "collection not exist")
 
@@ -221,13 +221,13 @@ class DbModule:
             return self.response.response_err(500, "Exception:" + str(e))
 
     def delete_one(self):
-        name = get_id_by_token()
-        if name is None:
+        isvalid, payload = verify_request()
+        if isvalid:
             return self.response.response_err(401, "token is invalid")
 
         content = request.get_json(force=True, silent=True)
 
-        col = get_collection(name, content["collection"])
+        col = get_collection(payload['name'], content["collection"])
         if not col:
             return self.response.response_err(404, "collection not exist")
 
@@ -238,13 +238,13 @@ class DbModule:
         return self.response.response_ok(data)
 
     def delete_many(self):
-        name = get_id_by_token()
-        if name is None:
+        isvalid, payload = verify_request()
+        if isvalid:
             return self.response.response_err(401, "token is invalid")
 
         content = request.get_json(force=True, silent=True)
 
-        col = get_collection(name, content["collection"])
+        col = get_collection(payload['name'], content["collection"])
         if not col:
             return self.response.response_err(404, "collection not exist")
 
@@ -259,15 +259,15 @@ class DbModule:
             return self.response.response_err(500, "Exception:" + str(e))
 
     def count_documents(self):
-        name = get_id_by_token()
-        if name is None:
+        isvalid, payload = verify_request()
+        if isvalid:
             return self.response.response_err(401, "token is invalid")
 
         content = request.get_json(force=True, silent=True)
 
         options = populate_options_count_documents(content)
 
-        col = get_collection(name, content["collection"])
+        col = get_collection(payload['name'], content["collection"])
         if not col:
             return self.response.response_err(404, "collection not exist")
 

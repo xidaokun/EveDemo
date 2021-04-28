@@ -1,9 +1,8 @@
-import logging
 import os
 
 from flask import request, Response
 
-from main.src.utils.auth import get_id_by_token
+from main.src.utils.auth import verify_request
 from main.src.utils.files import filter_path_root, query_upload_get_filepath, query_download
 from main.src.utils.server_response import *
 
@@ -18,9 +17,8 @@ class FilesModule:
 
     def upload_file(self, file_name):
         logging.debug(f"start upload file.....")
-        name = get_id_by_token()
-        logging.debug(f"name:"+name)
-        if name is None:
+        isvalid = verify_request()
+        if isvalid:
             return self.response.response_err(401, "token is invalid")
 
         file_name = filter_path_root(file_name)
@@ -43,8 +41,8 @@ class FilesModule:
 
     def download_file(self):
         resp = Response()
-        name = get_id_by_token()
-        if name is None:
+        isvalid = verify_request()
+        if isvalid:
             return self.response.response_err(401, "token is invalid")
 
         file_name = request.args.get('path')
@@ -56,11 +54,11 @@ class FilesModule:
         return data
 
     def list_files(self):
-        name = get_id_by_token()
-        if name is None:
+        isvalid, payload = verify_request()
+        if isvalid:
             return self.response.response_err(401, "token is invalid")
 
-        path = "./files" + "/" + name + "/"
+        path = "./files" + "/" + payload['name'] + "/"
         try:
             files = os.listdir(path)
         except Exception as e:
@@ -71,15 +69,15 @@ class FilesModule:
         return self.response.response_ok({"files": names})
 
     def get_file_info(self):
-        name = get_id_by_token()
-        if name is None:
+        isvalid, payload = verify_request()
+        if isvalid:
             return self.response.response_err(401, "token is invalid")
 
         filename = request.args.get('filename')
         if filename is None:
             return self.response.response_err(401, "file name is null")
 
-        path = "./files" + "/" + name + "/"
+        path = "./files" + "/" + payload['name'] + "/"
         file_full_name = path + filename.encode('utf-8').decode('utf-8')
         if not os.path.exists(file_full_name):
             return self.response.response_err(404, "file not found")
@@ -89,8 +87,8 @@ class FilesModule:
         return self.response.response_ok({"file": filename, "size": size})
 
     def delete_file(self):
-        name = get_id_by_token()
-        if name is None:
+        isvalid, payload = verify_request()
+        if isvalid:
             return self.response.response_err(401, "token is invalid")
 
         content = request.get_json(force=True, silent=True)
@@ -98,7 +96,7 @@ class FilesModule:
             return self.response.response_err(400, "parameter is not application/json")
         filename = content.get('file_name', None)
 
-        path = "./files" + "/" + name + "/"
+        path = "./files" + "/" + payload['name'] + "/"
         fullname = os.path.join(path, filename)
         if os.path.exists(fullname) and os.path.isfile(fullname):
             os.remove(fullname)
