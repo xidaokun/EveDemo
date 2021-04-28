@@ -8,8 +8,8 @@ ID_DB_PREFIX = "id_of_"
 ID_INFO_DB_NAME = "register"
 ID_INFO_REGISTER_COL = "users"
 
+ID_INFO_REGISTER_NAME = "name"
 ID_INFO_REGISTER_PASSWORD = "password"
-ID_INFO_REGISTER_TOKEN = "token"
 
 MODE_DEV = "dev"
 MODE_PROD = "prod"
@@ -24,15 +24,15 @@ def oauth_settings(auth_type, code, redirect_uri, state):
     }
 
     client_id = {
-        'github': "YOUR",
-        'wechat': "YOUR",
-        'qq': "YOUR"
+        'github': "a0f35ac949b0e8ba3e33",
+        'wechat': "wxd7c9f7b628e20d7f",
+        'qq': "1111706401"
     }
 
     client_secret = {
-        'github': "YOUR",
-        'wechat': "YOUR",
-        'qq': "YOUR"
+        'github': "6badc447e2ebe6f926b916ae637be96e0df99c14",
+        'wechat': "9c7b80e6ce82c5ccfed0a95ce37a1ba1",
+        'qq': "KXvh5uRrPOQJEPLW"
     }
 
     client_id_key = {

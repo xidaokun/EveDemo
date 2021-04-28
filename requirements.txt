@@ -9,3 +9,4 @@ PyYAML==5.4
 pytest==6.0.1
 requests==2.25.0
 sentry-sdk[flask]==0.19.4
+PyJWT
