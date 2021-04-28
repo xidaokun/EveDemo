@@ -35,6 +35,11 @@ def login():
     return login_module.login()
 
 
+@main.route('/api/v1/pwd/change', methods=['POST'])
+def modify_pwd():
+    return login_module.modify_pwd()
+
+
 @main.route('/api/v1/oauth', methods=['GET'])
 def oauth():
     return login_module.oauth()
