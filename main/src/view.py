@@ -25,22 +25,22 @@ def echo():
     return jsonify(content)
 
 
-@main.route('/api/v1/register', methods=['POST'])
+@main.route('/api/v1/user/register', methods=['POST'])
 def register():
     return login_module.register()
 
 
-@main.route('/api/v1/login', methods=['POST'])
+@main.route('/api/v1/user/login', methods=['POST'])
 def login():
     return login_module.login()
 
 
-@main.route('/api/v1/pwd/change', methods=['POST'])
+@main.route('/api/v1/user/change_pwd', methods=['POST'])
 def modify_pwd():
     return login_module.modify_pwd()
 
 
-@main.route('/api/v1/oauth', methods=['GET'])
+@main.route('/api/v1/user/oauth', methods=['GET'])
 def oauth():
     return login_module.oauth()
 

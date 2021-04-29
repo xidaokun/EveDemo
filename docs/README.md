@@ -5,6 +5,8 @@ Plan to design a general storage system that does not include specific scenario 
 * 4.Paid mode 
 * 5.Can be backed up to mainstream cloud disks such as google drive or one drive through Rclone
 
+>Tip: the project uses JWT based authentication mechanism
+
 
 ## Run
 ./run.sh start
@@ -12,27 +14,77 @@ Plan to design a general storage system that does not include specific scenario 
 
 ## APIS
 
-### Login
-* curl -d '{"name":"cary", "password":"123456"}' -H 'Content-Type: application/json' http://127.0.0.1:5000/api/v1/register
-* curl -d '{"name":"cary", "password":"123456"}' -H 'Content-Type: application/json' http://127.0.0.1:5000/api/v1/login
+### User manager
+1.register user
+>curl -d '{"name":"cary", "password":"123456"}' -H 'Content-Type: application/json' http://127.0.0.1:5000/api/v1/user/register
+
+> {
+"_status": "OK"
+}
+
+2.user login
+>curl -d '{"name":"cary", "password":"123456"}' -H 'Content-Type: application/json' http://127.0.0.1:5000/api/v1/user/login
+
+> {
+"_status": "OK",
+"access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJiYWNrZW5kIiwiaWF0IjoxNjE5NzA1MTg2LCJleHAiOjE2MTk3MDU0ODYsImF1ZCI6ImNsaWVudCIsInN1YiI6IjYwOGFiZDFjOWYzOTRmN2Q3ZjAxOWY5NSIsIm5hbWUiOiJjYXJ5Iiwic2NvcGVzIjpbIm9wZW4iXX0.3wirR5I5UCUDmuCi96adm3SctPEOFPYQKf9gcAF9Ib8",
+"user_id": "608abd1c9f394f7d7f019f95",
+"user_name": "cary"
+}
+
+3.change password
+>curl -d '{"password":"12345"}' -H "If-Match: token JWT_TOKEN" -H 'Content-Type: application/json' http://127.0.0.1:5000/api/v1/user/change_pwd
+
+### OAuth
+>curl http://127.0.0.1:5000/api/v1/user/oauth?code=your_access_code&type=github&redirect_uri=http://example.com&state=xyz
+
+> {
+"_status": "OK",
+"access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJiYWNrZW5kIiwiaWF0IjoxNjE5NzA1MTg2LCJleHAiOjE2MTk3MDU0ODYsImF1ZCI6ImNsaWVudCIsInN1YiI6IjYwOGFiZDFjOWYzOTRmN2Q3ZjAxOWY5NSIsIm5hbWUiOiJjYXJ5Iiwic2NvcGVzIjpbIm9wZW4iXX0.3wirR5I5UCUDmuCi96adm3SctPEOFPYQKf9gcAF9Ib8",
+"user_id": "608abd1c9f394f7d7f019f95",
+"user_name": "cary"
+}
 
 ### File operation
-* curl -H "If-Match: token bf2ef95c-948a-11eb-a5be-645aedeb0763" http://127.0.0.1:5000/api/v1/file/upload/test.txt
-* curl -i -H "If-Match: token bf2ef95c-948a-11eb-a5be-645aedeb0763" http://127.0.0.1:5000/api/v1/file/download/test.txt
-* curl -i -H "If-Match: token bf2ef95c-948a-11eb-a5be-645aedeb0763" http://127.0.0.1:5000/api/v1/file/list
-* curl -i -H "If-Match: token bf2ef95c-948a-11eb-a5be-645aedeb0763" http://127.0.0.1:5000/api/v1/file/information
-* curl -d -d '{"file":"test.txt"}' -H "If-Match: token bf2ef95c-948a-11eb-a5be-645aedeb0763" -H 'Content-Type: application/json' http://127.0.0.1:5000/api/v1/file/delete
+1.upload file
+>curl -H "If-Match: token JWT_TOKEN" http://127.0.0.1:5000/api/v1/file/upload/test.txt
+
+2.download file
+>curl -i -H "If-Match: token JWT_TOKEN" http://127.0.0.1:5000/api/v1/file/download/test.txt
+
+3.list files
+>curl -i -H "If-Match: token JWT_TOKEN" http://127.0.0.1:5000/api/v1/file/list
+
+4.get file information
+>curl -i -H "If-Match: token JWT_TOKEN" http://127.0.0.1:5000/api/v1/file/information
+
+5.delete file
+>curl -d '{"file":"test.txt"}' -H "If-Match: token JWT_TOKEN" -H 'Content-Type: application/json' http://127.0.0.1:5000/api/v1/file/delete
 
 ### Database operation
-* curl -d '{ "collection":"people",
-            "schema": {"firstname":{"type":"string","minlength":1,"maxlength":10},"lastname":{"type":"string","minlength":1,"maxlength":15,"required":true,"unique":true}}}' -H 'Content-Type: application/json' http://127.0.0.1:5000/api/v1/create_collection
-* curl -d '{"firstname": "barack", "lastname": "obama"}' -H 'Content-Type: application/json' http://127.0.0.1:5000/people
-* curl -d '[{"firstname": "barack", "lastname": "obama"}, {"firstname": "mitt", "lastname": "romney"}]' -H 'Content-Type: application/json' http://127.0.0.1:5000/api/v1/db/col/people
-* curl -i http://127.0.0.1:5000/api/v1/db/col/people?where=lastname=="obama"
-* curl -i http://127.0.0.1:5000/api/v1/db/col/people?sort=-lastname
-* curl -i http://127.0.0.1:5000/api/v1/db/col/people?max_results=1&page=1
-* curl -i -H "If-Match: 80b81f314712932a4d4ea75ab0b76a4eea613012" -H "Content-Type: application/json" -X PATCH -i http://127.0.0.1/api/v1/db/col/people/50adfa4038345b1049c88a37 -d '{"firstname": "ronald"}'
-* curl -i -H "If-Match: 80b81f314712932a4d4ea75ab0b76a4eea613012" -H "Content-Type: application/json" -X PUT -i http://127.0.0.1/api/v1/db/col/people/50adfa4038345b1049c88a37 -d '{"firstname": "ronald"}'
-* curl -i -H "If-Match: 80b81f314712932a4d4ea75ab0b76a4eea613012" -H "Content-Type: application/json" -X DELETE -i http://127.0.0.1/api/v1/db/col/people/50adfa4038345b1049c88a37
+1.create collection
+>curl -d '{"collection":"workers"}' -H "If-Match: token JWT_TOKEN" -H 'Content-Type: application/json' http://127.0.0.1:5000/api/v1/db/create_col
 
-###  operation
+2.insert one/many document
+>curl -d '{"collection":"workers","document":{"worker":"cary","title":"developer"},"options":{"bypass_document_validation":false}}' -H "If-Match: token JWT_TOKEN" -H 'Content-Type: application/json' http://127.0.0.1:5000/api/v1/db/insert_one
+
+3.update one/many document
+>curl -d '{"collection":"workers","filter":{"worker":"cary",},"update":{"$set":{"author":"cary","title":"manger"}},"options":{"upsert":true,"bypass_document_validation":false}}' -H "If-Match: token JWT_TOKEN" -H 'Content-Type: application/json' http://127.0.0.1:5000/api/v1/db/update_one
+
+4.count documents
+>curl -d '{"collection":"workers","filter":{"worker":"cary",},"options":{"skip":0,"limit":10,"maxTimeMS":1000000000}}' -H "If-Match: token JWT_TOKEN" -H 'Content-Type: application/json' http://127.0.0.1:5000/api/v1/db/count_documents
+
+5.delete one/many documents
+>curl -d '{"collection":"workers","filter":{"worker":"cary",}}' -H "If-Match: token JWT_TOKEN" -H 'Content-Type: application/json' http://127.0.0.1:5000/api/v1/db/delete_one
+
+6.delete collection
+>curl -d '{"collection":"workers"}' -H "If-Match: token JWT_TOKEN" -H 'Content-Type: application/json' http://127.0.0.1:5000/api/v1/db/delete_col
+
+
+#### TODO
+* SMS service
+* Docker deployment
+* FFmpeg
+* Message push mechanism
+* Safety considerations
+
