@@ -3,13 +3,20 @@ MONGO_PORT = 27017
 
 GITHUB_GRANT_TYPE = "authorization_code"
 
-ID_PREFIX = "_id_prefix"
-ID_DB_PREFIX = "id_of_"
-ID_INFO_DB_NAME = "register"
-ID_INFO_REGISTER_COL = "users"
+DB_NAME = "register"
+COL_NAME = "users"
 
-ID_INFO_REGISTER_NAME = "name"
-ID_INFO_REGISTER_PASSWORD = "password"
+REGISTER_ID_KEY = "_id"
+REGISTER_NAME_KEY = "name"
+REGISTER_PASSWORD_KEY = "password"
+
+DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
+
+JWT_ISS = "backend"
+JWT_AUD = "client"
+JWT_ALGORITHMS = "HS256"
+JWT_SECRET = "secret"
+JWT_SCOPES = "open"
 
 MODE_DEV = "dev"
 MODE_PROD = "prod"
