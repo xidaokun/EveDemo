@@ -22,8 +22,8 @@ class DbModule:
         self.app = app
 
     def create_collection(self):
-        isvalid, payload = verify_request()
-        if isvalid:
+        isvalid, payload = verify_request(request)
+        if isvalid is False:
             return self.response.response_err(401, "token is invalid")
 
         content = request.get_json(force=True, silent=True)
@@ -45,7 +45,7 @@ class DbModule:
         return self.response.response_ok()
 
     def delete_collection(self):
-        isvalid, payload = verify_request()
+        isvalid, payload = verify_request(request)
         if isvalid:
             return self.response.response_err(401, "token is invalid")
 
@@ -69,7 +69,7 @@ class DbModule:
         return self.response.response_ok()
 
     def insert_one(self):
-        isvalid, payload = verify_request()
+        isvalid, payload = verify_request(request)
         if isvalid:
             return self.response.response_err(401, "token is invalid")
 
@@ -88,7 +88,7 @@ class DbModule:
         return self.response.response_ok(data)
 
     def insert_many(self):
-        isvalid, payload = verify_request()
+        isvalid, payload = verify_request(request)
         if isvalid:
             return self.response.response_err(401, "token is invalid")
 
@@ -117,7 +117,7 @@ class DbModule:
             return self.response.response_err(500, "Exception:" + str(e))
 
     def find_one(self):
-        isvalid, payload = verify_request()
+        isvalid, payload = verify_request(request)
         if isvalid:
             return self.response.response_err(401, "token is invalid")
 
@@ -149,7 +149,7 @@ class DbModule:
             return self.response.response_err(500, "Exception:" + str(e))
 
     def find_many(self):
-        isvalid, payload = verify_request()
+        isvalid, payload = verify_request(request)
         if isvalid:
             return self.response.response_err(401, "token is invalid")
 
@@ -168,7 +168,7 @@ class DbModule:
         return self.response.response_ok(data)
 
     def update_one(self):
-        isvalid, payload = verify_request()
+        isvalid, payload = verify_request(request)
         if isvalid:
             return self.response.response_err(401, "token is invalid")
 
@@ -186,7 +186,7 @@ class DbModule:
         return self.response.response_ok(data)
 
     def update_many(self):
-        isvalid, payload = verify_request()
+        isvalid, payload = verify_request(request)
         if isvalid:
             return self.response.response_err(401, "token is invalid")
 
@@ -221,7 +221,7 @@ class DbModule:
             return self.response.response_err(500, "Exception:" + str(e))
 
     def delete_one(self):
-        isvalid, payload = verify_request()
+        isvalid, payload = verify_request(request)
         if isvalid:
             return self.response.response_err(401, "token is invalid")
 
@@ -238,7 +238,7 @@ class DbModule:
         return self.response.response_ok(data)
 
     def delete_many(self):
-        isvalid, payload = verify_request()
+        isvalid, payload = verify_request(request)
         if isvalid:
             return self.response.response_err(401, "token is invalid")
 
@@ -259,7 +259,7 @@ class DbModule:
             return self.response.response_err(500, "Exception:" + str(e))
 
     def count_documents(self):
-        isvalid, payload = verify_request()
+        isvalid, payload = verify_request(request)
         if isvalid:
             return self.response.response_err(401, "token is invalid")
 

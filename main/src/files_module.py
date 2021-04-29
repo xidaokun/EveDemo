@@ -17,7 +17,7 @@ class FilesModule:
 
     def upload_file(self, file_name):
         logging.debug(f"start upload file.....")
-        isvalid = verify_request()
+        isvalid = verify_request(request)
         if isvalid:
             return self.response.response_err(401, "token is invalid")
 
@@ -41,7 +41,7 @@ class FilesModule:
 
     def download_file(self):
         resp = Response()
-        isvalid = verify_request()
+        isvalid = verify_request(request)
         if isvalid:
             return self.response.response_err(401, "token is invalid")
 
@@ -54,7 +54,7 @@ class FilesModule:
         return data
 
     def list_files(self):
-        isvalid, payload = verify_request()
+        isvalid, payload = verify_request(request)
         if isvalid:
             return self.response.response_err(401, "token is invalid")
 
@@ -69,7 +69,7 @@ class FilesModule:
         return self.response.response_ok({"files": names})
 
     def get_file_info(self):
-        isvalid, payload = verify_request()
+        isvalid, payload = verify_request(request)
         if isvalid:
             return self.response.response_err(401, "token is invalid")
 
@@ -87,7 +87,7 @@ class FilesModule:
         return self.response.response_ok({"file": filename, "size": size})
 
     def delete_file(self):
-        isvalid, payload = verify_request()
+        isvalid, payload = verify_request(request)
         if isvalid:
             return self.response.response_err(401, "token is invalid")
 

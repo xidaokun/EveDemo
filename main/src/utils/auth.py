@@ -3,18 +3,20 @@ import time
 import jwt
 from jwt import ExpiredSignatureError
 
+from main.src.utils.constants import JWT_SECRET, JWT_ISS, JWT_AUD, JWT_ALGORITHMS, JWT_SCOPES
+
 
 def create_token(user_id, user_name):
     payload = {
-        "iss": "backend",
+        "iss": JWT_ISS,
         "iat": int(time.time()),
-        "exp": int(time.time()) + 86400 * 7,
-        "aud": "client",
+        "exp": int(time.time()) + 60 * 5,
+        "aud": JWT_AUD,
         "sub": user_id,
         "name": user_name,
-        "scopes": ['open']
+        "scopes": [JWT_SCOPES]
     }
-    token = jwt.encode(payload, 'secret', algorithm='HS256')
+    token = jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHMS)
     return {'access_token': token,
                   'user_name': user_name,
                   'user_id': user_id}
@@ -31,7 +33,7 @@ def get_authorization(request):
     if not authorization:
         return False, None
     try:
-        token = authorization.split(' ')
+        authorization_type, token = authorization.split(' ')
         return token
     except ValueError:
         return None
@@ -39,11 +41,11 @@ def get_authorization(request):
 
 def verify_jwt_token(token):
     try:
-        payload = jwt.decode(token, 'secret',
-                             audience="client",
-                             algorithms=['HS256'])
+        payload = jwt.decode(token, JWT_SECRET,
+                             audience=[JWT_AUD],
+                             algorithms=[JWT_ALGORITHMS])
     except ExpiredSignatureError:
-        return False, None
+        return False, token
     if payload:
         return True, payload
     return False, None

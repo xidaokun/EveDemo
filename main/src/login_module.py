@@ -31,9 +31,9 @@ class LoginModule:
             return self.response.response_err(400, "name or password is null")
 
         try:
-            save_info(name, hashlib.sha256(password).hexdigest())
+            save_info(name, hashlib.sha256(password.encode("utf8")).hexdigest())
         except Exception as e:
-            print("Exception in register::", e)
+            return self.response.response_err(500, e)
 
         return self.response.response_ok()
 
@@ -51,12 +51,13 @@ class LoginModule:
             return self.response.response_err(401, "can not find user")
 
         # verify password
-        pw = info[ID_INFO_REGISTER_PASSWORD]
-        password = hashlib.sha256(password).hexdigest()
+        pw = info[REGISTER_PASSWORD_KEY]
+        password = hashlib.sha256(password.encode("utf8")).hexdigest()
         if password != pw:
             return self.response.response_err(401, "password is error")
 
-        data = create_token(name)
+        user_id = str(info[REGISTER_ID_KEY])
+        data = create_token(user_id, name)
         return self.response.response_ok(data)
 
     def oauth(self):
