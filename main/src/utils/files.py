@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 from pathlib import Path
 
 from main.settings import VAULTS_BASE_DIR
@@ -11,6 +11,7 @@ def filter_path_root(name):
         return name[1:]
     else:
         return name
+
 
 def get_save_files_path():
     path = Path(VAULTS_BASE_DIR)
