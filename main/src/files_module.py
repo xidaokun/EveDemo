@@ -2,7 +2,7 @@ import os
 
 from flask import request, Response
 
-from main.src.utils.auth import verify_request
+from main.src.utils.auth import LoginCheck, LoginCheckWithPayload
 from main.src.utils.files import filter_path_root, query_upload_get_filepath, query_download
 from main.src.utils.server_response import *
 
@@ -15,12 +15,8 @@ class FilesModule:
     def init_app(self, app):
         self.app = app
 
+    @LoginCheck
     def upload_file(self, file_name):
-        logging.debug(f"start upload file.....")
-        isvalid = verify_request(request)
-        if isvalid:
-            return self.response.response_err(401, "token is invalid")
-
         file_name = filter_path_root(file_name)
         logging.debug(f"file name:" + file_name)
         full_path_name, err = query_upload_get_filepath(file_name)
@@ -39,11 +35,9 @@ class FilesModule:
 
         return self.response.response_ok()
 
+    @LoginCheck
     def download_file(self):
         resp = Response()
-        isvalid = verify_request(request)
-        if isvalid:
-            return self.response.response_err(401, "token is invalid")
 
         file_name = request.args.get('path')
         data, status_code = query_download(file_name)
@@ -53,11 +47,8 @@ class FilesModule:
 
         return data
 
-    def list_files(self):
-        isvalid, payload = verify_request(request)
-        if isvalid:
-            return self.response.response_err(401, "token is invalid")
-
+    @LoginCheckWithPayload
+    def list_files(self, payload):
         path = "./files" + "/" + payload['name'] + "/"
         try:
             files = os.listdir(path)
@@ -68,11 +59,8 @@ class FilesModule:
                  if os.path.isfile(os.path.join(path, name))]
         return self.response.response_ok({"files": names})
 
-    def get_file_info(self):
-        isvalid, payload = verify_request(request)
-        if isvalid:
-            return self.response.response_err(401, "token is invalid")
-
+    @LoginCheckWithPayload
+    def get_file_info(self, payload):
         filename = request.args.get('filename')
         if filename is None:
             return self.response.response_err(401, "file name is null")
@@ -86,11 +74,8 @@ class FilesModule:
 
         return self.response.response_ok({"file": filename, "size": size})
 
-    def delete_file(self):
-        isvalid, payload = verify_request(request)
-        if isvalid:
-            return self.response.response_err(401, "token is invalid")
-
+    @LoginCheckWithPayload
+    def delete_file(self, payload):
         content = request.get_json(force=True, silent=True)
         if content is None:
             return self.response.response_err(400, "parameter is not application/json")

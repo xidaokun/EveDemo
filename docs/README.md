@@ -50,7 +50,7 @@ Plan to design a general storage system that does not include specific scenario 
 >curl -H "If-Match: token JWT_TOKEN" http://127.0.0.1:5000/api/v1/file/upload/test.txt
 
 2.download file
->curl -i -H "If-Match: token JWT_TOKEN" http://127.0.0.1:5000/api/v1/file/download/test.txt
+>curl -i -H "If-Match: token JWT_TOKEN" http://127.0.0.1:5000/api/v1/file/download?path=test.txt
 
 3.list files
 >curl -i -H "If-Match: token JWT_TOKEN" http://127.0.0.1:5000/api/v1/file/list
@@ -82,6 +82,7 @@ Plan to design a general storage system that does not include specific scenario 
 
 
 #### TODO
+* CORS
 * SMS service
 * Docker deployment
 * FFmpeg

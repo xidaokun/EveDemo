@@ -5,7 +5,7 @@ from flask import request
 from pymongo import MongoClient
 from pymongo.errors import CollectionInvalid
 
-from main.src.utils.auth import verify_request
+from main.src.utils.auth import LoginCheckWithPayload
 from main.src.utils.constants import MONGO_HOST, MONGO_PORT
 from main.src.utils.db_utils import gene_mongo_db_name, populate_options_insert_one, get_collection, query_insert_one, \
     options_filter, convert_oid, gene_sort, populate_options_find_many, query_find_many, populate_options_update_one, \
@@ -21,11 +21,8 @@ class DbModule:
     def init_app(self, app):
         self.app = app
 
-    def create_collection(self):
-        isvalid, payload = verify_request(request)
-        if isvalid is False:
-            return self.response.response_err(401, "token is invalid")
-
+    @LoginCheckWithPayload
+    def create_collection(self, payload):
         content = request.get_json(force=True, silent=True)
         if content is None:
             return self.response.response_err(400, "parameter is not application/json")
@@ -44,11 +41,8 @@ class DbModule:
             return self.response.response_err(500, "Exception:" + str(e))
         return self.response.response_ok()
 
-    def delete_collection(self):
-        isvalid, payload = verify_request(request)
-        if isvalid:
-            return self.response.response_err(401, "token is invalid")
-
+    @LoginCheckWithPayload
+    def delete_collection(self, payload):
         content = request.get_json(force=True, silent=True)
         if content is None:
             return self.response.response_err(400, "parameter is not application/json")
@@ -68,11 +62,8 @@ class DbModule:
             return self.response.response_err(500, "Exception:" + str(e))
         return self.response.response_ok()
 
-    def insert_one(self):
-        isvalid, payload = verify_request(request)
-        if isvalid:
-            return self.response.response_err(401, "token is invalid")
-
+    @LoginCheckWithPayload
+    def insert_one(self, payload):
         content = request.get_json(force=True, silent=True)
 
         options = populate_options_insert_one(content)
@@ -87,11 +78,8 @@ class DbModule:
 
         return self.response.response_ok(data)
 
-    def insert_many(self):
-        isvalid, payload = verify_request(request)
-        if isvalid:
-            return self.response.response_err(401, "token is invalid")
-
+    @LoginCheckWithPayload
+    def insert_many(self, payload):
         content = request.get_json(force=True, silent=True)
 
         col = get_collection(payload['name'], content["collection"])
@@ -116,11 +104,8 @@ class DbModule:
         except Exception as e:
             return self.response.response_err(500, "Exception:" + str(e))
 
-    def find_one(self):
-        isvalid, payload = verify_request(request)
-        if isvalid:
-            return self.response.response_err(401, "token is invalid")
-
+    @LoginCheckWithPayload
+    def find_one(self, payload):
         content = request.get_json(force=True, silent=True)
         col = get_collection(payload['name'], content["collection"])
         if not col:
@@ -148,11 +133,8 @@ class DbModule:
         except Exception as e:
             return self.response.response_err(500, "Exception:" + str(e))
 
-    def find_many(self):
-        isvalid, payload = verify_request(request)
-        if isvalid:
-            return self.response.response_err(401, "token is invalid")
-
+    @LoginCheckWithPayload
+    def find_many(self, payload):
         content = request.get_json(force=True, silent=True)
 
         options = populate_options_find_many(content)
@@ -167,11 +149,8 @@ class DbModule:
 
         return self.response.response_ok(data)
 
-    def update_one(self):
-        isvalid, payload = verify_request(request)
-        if isvalid:
-            return self.response.response_err(401, "token is invalid")
-
+    @LoginCheckWithPayload
+    def update_one(self, payload):
         content = request.get_json(force=True, silent=True)
 
         options = populate_options_update_one(content)
@@ -185,11 +164,8 @@ class DbModule:
             return self.response.response_err(500, err_message)
         return self.response.response_ok(data)
 
-    def update_many(self):
-        isvalid, payload = verify_request(request)
-        if isvalid:
-            return self.response.response_err(401, "token is invalid")
-
+    @LoginCheckWithPayload
+    def update_many(self, payload):
         content = request.get_json(force=True, silent=True)
 
         col = get_collection(payload['name'], content["collection"])
@@ -220,11 +196,8 @@ class DbModule:
         except Exception as e:
             return self.response.response_err(500, "Exception:" + str(e))
 
-    def delete_one(self):
-        isvalid, payload = verify_request(request)
-        if isvalid:
-            return self.response.response_err(401, "token is invalid")
-
+    @LoginCheckWithPayload
+    def delete_one(self, payload):
         content = request.get_json(force=True, silent=True)
 
         col = get_collection(payload['name'], content["collection"])
@@ -237,11 +210,8 @@ class DbModule:
 
         return self.response.response_ok(data)
 
-    def delete_many(self):
-        isvalid, payload = verify_request(request)
-        if isvalid:
-            return self.response.response_err(401, "token is invalid")
-
+    @LoginCheckWithPayload
+    def delete_many(self, payload):
         content = request.get_json(force=True, silent=True)
 
         col = get_collection(payload['name'], content["collection"])
@@ -258,11 +228,8 @@ class DbModule:
         except Exception as e:
             return self.response.response_err(500, "Exception:" + str(e))
 
-    def count_documents(self):
-        isvalid, payload = verify_request(request)
-        if isvalid:
-            return self.response.response_err(401, "token is invalid")
-
+    @LoginCheckWithPayload
+    def count_documents(self, payload):
         content = request.get_json(force=True, silent=True)
 
         options = populate_options_count_documents(content)
