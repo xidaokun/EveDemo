@@ -1,16 +1,18 @@
 import time
 
 import jwt
+from flask import request
 from jwt import ExpiredSignatureError
 
 from main.src.utils.constants import JWT_SECRET, JWT_ISS, JWT_AUD, JWT_ALGORITHMS, JWT_SCOPES
+from main.src.utils.server_response import ServerResponse
 
 
 def create_token(user_id, user_name):
     payload = {
         "iss": JWT_ISS,
         "iat": int(time.time()),
-        "exp": int(time.time()) + 60 * 5,
+        "exp": int(time.time()) + 60 * 60,
         "aud": JWT_AUD,
         "sub": user_id,
         "name": user_name,
@@ -49,3 +51,31 @@ def verify_jwt_token(token):
     if payload:
         return True, payload
     return False, None
+
+
+class LoginCheck:
+    def __init__(self, func):
+        self._func = func
+        self.response = ServerResponse("Auth")
+
+    def __call__(self, *args, **kwargs):
+        isvalid, payload = verify_request(request)
+        if isvalid is False:
+            response = ServerResponse("Auth")
+            return response.response_err(401, "token is invalid")
+        if args:
+            return self._func(self, args[0])
+        return self._func(self)
+
+
+class LoginCheckWithPayload:
+    def __init__(self, func):
+        self._func = func
+        self.response = ServerResponse("Auth")
+
+    def __call__(self, *args, **kwargs):
+        isvalid, payload = verify_request(request)
+        if isvalid is False:
+            response = ServerResponse("Auth")
+            return response.response_err(401, "token is invalid")
+        return self._func(self, payload)
