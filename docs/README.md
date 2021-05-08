@@ -16,7 +16,7 @@ Plan to design a general storage system that does not include specific scenario 
 
 ### User manager
 1.register user
->curl -d '{"name":"cary", "password":"123456"}' -H 'Content-Type: application/json' http://127.0.0.1:5000/api/v1/user/register
+>curl -d '{"name":"cary", "password":"123456", "phone":"1234567890", "code":"1111"}' -H 'Content-Type: application/json' http://127.0.0.1:5000/api/v1/user/register
 
 > {
 "_status": "OK"
@@ -32,7 +32,10 @@ Plan to design a general storage system that does not include specific scenario 
 "user_name": "cary"
 }
 
-3.change password
+5.verification code
+>curl -d '{"phone":"1234567890"}' -H 'Content-Type: application/json' http://127.0.0.1:5000/api/v1/user/verification_code
+
+4.change password
 >curl -d '{"password":"12345"}' -H "If-Match: token JWT_TOKEN" -H 'Content-Type: application/json' http://127.0.0.1:5000/api/v1/user/change_pwd
 
 ### OAuth
@@ -83,7 +86,6 @@ Plan to design a general storage system that does not include specific scenario 
 
 #### TODO
 * CORS
-* SMS service
 * Docker deployment
 * FFmpeg
 * Message push mechanism

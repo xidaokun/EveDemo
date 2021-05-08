@@ -35,6 +35,11 @@ def login():
     return login_module.login()
 
 
+@main.route('/api/v1/user/verification_code', methods=['POST'])
+def verification_code():
+    return login_module.verification_code()
+
+
 @main.route('/api/v1/user/change_pwd', methods=['POST'])
 def modify_pwd():
     return login_module.modify_pwd()

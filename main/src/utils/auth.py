@@ -4,7 +4,7 @@ import jwt
 from flask import request
 from jwt import ExpiredSignatureError
 
-from main.src.utils.constants import JWT_SECRET, JWT_ISS, JWT_AUD, JWT_ALGORITHMS, JWT_SCOPES
+from main.settings import JWT_ISS, JWT_AUD, JWT_SCOPES, JWT_SECRET, JWT_ALGORITHMS
 from main.src.utils.server_response import ServerResponse
 
 
