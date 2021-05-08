@@ -12,16 +12,6 @@ REGISTER_PASSWORD_KEY = "password"
 
 DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 
-JWT_ISS = "backend"
-JWT_AUD = "client"
-JWT_ALGORITHMS = "HS256"
-JWT_SECRET = "secret"
-JWT_SCOPES = "open"
-
-MODE_DEV = "dev"
-MODE_PROD = "prod"
-MODE_TEST = "test"
-
 
 def oauth_settings(auth_type, code, redirect_uri, state):
     url = {

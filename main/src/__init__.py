@@ -1,7 +1,6 @@
 import logging
 
 from . import view
-from .utils.constants import MODE_TEST
 
 logging.getLogger().level = logging.INFO
 

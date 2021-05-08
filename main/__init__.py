@@ -1,7 +1,7 @@
 from flask import Flask, request
 
 from main import src
-from main.src.utils.constants import MODE_DEV
+from main.settings import MODE_DEV
 
 DEFAULT_APP_NAME = 'backend services'
 
