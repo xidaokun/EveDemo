@@ -38,8 +38,8 @@ class LoginModule:
         phone = content.get('phone', None)
         if (name is None) or (password is None):
             return self.response.response_err(400, "name or password is null")
-        code = content.get(phone, None)
-        cache_code = self._redis_utils.get('code')
+        code = content.get('code', None)
+        cache_code = self._redis_utils.get(phone)
         if cache_code is None:
             return self.response.response_err(400, "code has expired")
 

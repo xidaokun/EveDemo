@@ -16,7 +16,7 @@ Plan to design a general storage system that does not include specific scenario 
 
 ### User manager
 1.register user
->curl -d '{"name":"cary", "password":"123456", "phone":"1234567890", "code":"1111"}' -H 'Content-Type: application/json' http://127.0.0.1:5000/api/v1/user/register
+>curl -d '{"name":"cary", "password":"123456", "phone":"1234567890", "code":1111}' -H 'Content-Type: application/json' http://127.0.0.1:5000/api/v1/user/register
 
 > {
 "_status": "OK"
