@@ -148,3 +148,5 @@ dmypy.json
 
 # Max osx
 .DS_Store
+
+tests/learn
