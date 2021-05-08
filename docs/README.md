@@ -32,7 +32,7 @@ Plan to design a general storage system that does not include specific scenario 
 "user_name": "cary"
 }
 
-5.verification code
+3.verification code
 >curl -d '{"phone":"1234567890"}' -H 'Content-Type: application/json' http://127.0.0.1:5000/api/v1/user/verification_code
 
 4.change password
